@@ -94,10 +94,9 @@ class OutConv(nn.Module):
         return self.conv(x)
 
 class AudioConvWenet(nn.Module):
-    def __init__(self):
+    def __init__(self, mobile=False):
         super(AudioConvWenet, self).__init__()
-        # ch = [16, 32, 64, 128, 256]   # if you want to run this model on a mobile device, use this. 
-        ch = [32, 64, 128, 256, 512]
+        ch = [16, 32, 64, 128, 256] if mobile else [32, 64, 128, 256, 512]
         self.conv1 = InvertedResidual(ch[2], ch[3], stride=1, use_res_connect=False, expand_ratio=2)
         self.conv2 = InvertedResidual(ch[3], ch[3], stride=1, use_res_connect=True, expand_ratio=2)
         
@@ -130,10 +129,9 @@ class AudioConvWenet(nn.Module):
         return x
     
 class AudioConvHubert(nn.Module):
-    def __init__(self):
+    def __init__(self, mobile=False):
         super(AudioConvHubert, self).__init__()
-        # ch = [16, 32, 64, 128, 256]   # if you want to run this model on a mobile device, use this. 
-        ch = [32, 64, 128, 256, 512]
+        ch = [16, 32, 64, 128, 256] if mobile else [32, 64, 128, 256, 512]
         self.conv1 = InvertedResidual(16, ch[1], stride=1, use_res_connect=False, expand_ratio=2)
         self.conv2 = InvertedResidual(ch[1], ch[2], stride=1, use_res_connect=False, expand_ratio=2)
         
@@ -166,16 +164,15 @@ class AudioConvHubert(nn.Module):
         return x
 
 class Model(nn.Module):
-    def __init__(self,n_channels=6, mode='wenet'):
+    def __init__(self, n_channels=6, mode='wenet', mobile=False):
         super(Model, self).__init__()
-        self.n_channels = n_channels   #BGR
-        # ch = [16, 32, 64, 128, 256]  # if you want to run this model on a mobile device, use this. 
-        ch = [32, 64, 128, 256, 512]
-        
-        if mode=='hubert':
-            self.audio_model = AudioConvHubert()
-        if mode=='wenet':
-            self.audio_model = AudioConvWenet()
+        self.n_channels = n_channels
+        ch = [16, 32, 64, 128, 256] if mobile else [32, 64, 128, 256, 512]
+
+        if mode == 'hubert':
+            self.audio_model = AudioConvHubert(mobile=mobile)
+        if mode == 'wenet':
+            self.audio_model = AudioConvWenet(mobile=mobile)
             
         self.fuse_conv = nn.Sequential(
             DoubleConvDW(ch[4]*2, ch[4], stride=1),

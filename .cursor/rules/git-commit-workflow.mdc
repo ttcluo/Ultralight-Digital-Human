@@ -1,0 +1,15 @@
+---
+description: 改完代码交付前需填写简短 git commit 说明
+alwaysApply: true
+---
+
+# Git Commit 工作流约定
+
+改完代码交付前，需填写简短的 git commit 说明。
+
+**建议格式**：`类型: 简短描述`
+
+**示例**：
+- `fix: 修复 wenet 特征维度`
+- `feat: 新增 pth2onnx 命令行参数`
+- `refactor: 抽取 Model mobile 参数`
