@@ -475,10 +475,9 @@ if __name__ == '__main__':
     parser.add_argument('audio_path', type=str)
     opt = parser.parse_args()
 
+    audio_path = os.path.abspath(opt.audio_path)
     script_dir = os.path.dirname(os.path.abspath(__file__))
     os.chdir(script_dir)
-
-    audio_path = os.path.abspath(opt.audio_path)
 
     import time
 
