@@ -470,16 +470,20 @@ def to_numpy(tensor):
 
 if __name__ == '__main__':
     import argparse
+    import os
     parser = argparse.ArgumentParser()
     parser.add_argument('audio_path', type=str)
     opt = parser.parse_args()
-    
+
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(script_dir)
+
+    audio_path = os.path.abspath(opt.audio_path)
+
     import time
 
-    audio_path = opt.audio_path
-    
-    
-    with open('conf/decode_engine_V4.yaml', 'r') as fin:
+    config_path = os.path.join(script_dir, 'conf', 'decode_engine_V4.yaml')
+    with open(config_path, 'r') as fin:
         configs = yaml.load(fin, Loader=yaml.FullLoader)
     
     asr = ASR_Model(configs)
@@ -522,7 +526,7 @@ if __name__ == '__main__':
     #encoder_in_cnn_cache = encoder_model['cnn_cache']
     #ctc_model = F.load_as_dict("/data/kzx/work/MNN/build/MNN_Models/ctc.mnn")
     #ctc_in = ctc_model["hidden"]
-    encoder_model_path = "encoder.onnx"
+    encoder_model_path = os.path.join(script_dir, "encoder.onnx")
     ort_encoder_session = ort.InferenceSession(encoder_model_path)
 
 
