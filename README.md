@@ -121,29 +121,46 @@ python train.py --dataset_dir ./data_dir/ --save_dir ./checkpoint/ --asr hubert 
 
 ## inference
 
-Before run inference, you need to extract test audio feature(i will merge this step and inference step), run this
+### 一键推理（推荐）
 
-在推理之前，需要先提取测试音频的特征（之后会把这步和推理合并到一起去），运行(音频采样率需要是16000)
-
-``` bash
-python data_utils/hubert.py --wav your_test_audio.wav  # when using hubert
-
-or
-
-python data_utils/python wenet_infer.py your_test_audio.wav  # when using wenet
+**PyTorch 推理**（需 PyTorch 环境）：
+```bash
+python run_inference.py --audio ./data/preview.wav --dataset ./data/raw --checkpoint checkpoint/195.pth --output result.mp4
 ```
 
-then you get your_test_audio_hu.npy or your_test_audio_wenet.npy
+**ONNX 推理**（无需 PyTorch，适合部署）：
+```bash
+# 1. 导出 ONNX
+python pth2onnx.py --checkpoint checkpoint/195.pth --output unet.onnx --asr wenet
 
-then run
-``` bash
-python inference.py --asr hubert --dataset ./your_data_dir/ --audio_feat your_test_audio_hu.npy --save_path xxx.mp4 --checkpoint your_trained_ckpt.pth
+# 2. 推理
+python run_inference_onnx.py --audio ./data/preview.wav --dataset ./data/raw --onnx unet.onnx --output result.mp4
 ```
 
-To merge the audio and the video, run
+### 分步推理
 
-``` bash
+提取测试音频特征（音频采样率需 16000）：
+```bash
+python data_utils/hubert.py --wav your_test_audio.wav   # hubert
+python data_utils/wenet_infer.py your_test_audio.wav    # wenet
+```
+
+得到 your_test_audio_hu.npy 或 your_test_audio_wenet.npy 后：
+```bash
+python inference.py --asr wenet --dataset ./your_data_dir/ --audio_feat your_test_audio_wenet.npy --save_path xxx.mp4 --checkpoint your_trained_ckpt.pth
+```
+
+音视频合成：
+```bash
 ffmpeg -i xxx.mp4 -i your_audio.wav -c:v libx264 -c:a aac result_test.mp4
+```
+
+### 模型导出 (pth2onnx)
+
+```bash
+python pth2onnx.py --checkpoint checkpoint/195.pth --output unet.onnx --asr wenet
+# 移动端小模型加 --mobile
+python pth2onnx.py --checkpoint checkpoint/195.pth --output unet_mobile.onnx --asr wenet --mobile
 ```
 
 ## Enjoy🎉🎉🎉
