@@ -163,6 +163,10 @@ python pth2onnx.py --checkpoint checkpoint/195.pth --output unet.onnx --asr wene
 python pth2onnx.py --checkpoint checkpoint/195.pth --output unet_mobile.onnx --asr wenet --mobile
 ```
 
+### Android 部署
+
+见 [android/README.md](android/README.md)。需先运行 `export_avatar_assets.py` 和 `export_audio_feat_bin.py` 准备 assets。
+
 ## Enjoy🎉🎉🎉
 
 这个模型是支持流式推理的，但是代码还没有完善，之后我会提上来。

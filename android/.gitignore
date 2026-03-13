@@ -1,0 +1,34 @@
+# Build
+/build
+/app/build
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Gradle
+.gradle/
+!gradle/wrapper/gradle-wrapper.properties
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+local.properties
+
+# Signing
+*.jks
+*.keystore
+
+# 大文件：模型与资源（需自行准备，见 README）
+app/src/main/assets/unet.onnx
+app/src/main/assets/encoder.onnx
+app/src/main/assets/*.bin
+app/src/main/assets/full_body_img/*.jpg
+app/src/main/assets/full_body_img/*.jpeg
+app/src/main/assets/full_body_img/*.png
+
+# OS
+.DS_Store
+Thumbs.db
